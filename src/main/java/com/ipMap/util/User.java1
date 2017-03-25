@@ -1,0 +1,46 @@
+package com.ipMap.util;
+
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+
+/**
+ * 用户对象类
+ * @author Administrator
+ * @version 1.0
+ * 2016-10-08
+ */
+public class User implements HttpSessionBindingListener{
+	private String name;//用户名
+	private UserList ul = UserList.getInstance();//得到用户容器
+	
+	public User(String uName){
+		super();
+		this.name = uName;
+	}
+	//当session 创建会调用该方法 用户登录
+	public void valueBound(HttpSessionBindingEvent event) {
+		ul.addUser(name);//装载用户
+	}
+
+	/**
+	 * 当session 销毁时调用 用户退出
+	 */
+	public void valueUnbound(HttpSessionBindingEvent event) {
+		ul.removeUser(name);
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public UserList getUl() {
+		return ul;
+	}
+	public void setUl(UserList ul) {
+		this.ul = ul;
+	}
+
+	
+	
+}

@@ -1,0 +1,42 @@
+package com.ipMap.util;
+
+import java.util.Vector;
+
+/**
+ * 
+ * @author Administrator
+ * 单例模式： 懒汉式 饿汉式 登记
+ */
+public class UserList {
+	private Vector<String> vector;//线程安全
+	private static final UserList userList = new UserList();
+	private UserList(){
+		vector = new Vector<String>();
+	}
+	public static UserList getInstance(){
+		return userList;
+	}
+	//登陆用户登陆时，吧用户添加到管理容器里
+	public void addUser(String name){
+		if(name!=null){
+			vector.add(name);
+		}
+	}
+	//退出
+	public void removeUser(String name){
+		if(name!=null){
+			vector.remove(name);
+		}
+	}
+	//统计容器用户数据量
+	public int getCount(){
+		return vector.size();
+	}
+	//得到所有用户
+	public Vector<String> gerUserList(){
+		if(vector!=null){
+			return vector;
+		}
+		return null;
+	}
+}

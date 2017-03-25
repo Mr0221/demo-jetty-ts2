@@ -1,0 +1,26 @@
+webservice/restful api
+Redis，MongoDB memcached
+NoSQL数据库
+SOAP
+bootstrap
+Ngix
+Hadoop
+掌握Linux常用指令 ，能进行shell编程
+慢查询进行优化  熟悉My SQL，了解索引原理，能设计高效的表结构和存取方式
+NIO
+html5,css3
+Velocity、Freemaker
+7、熟悉信息安全基本知识，如PKI/CA体系优先考虑；
+EasyUI ExtJS
+JVM性能调优
+Intellij
+Rose UML
+
+
+webservice/restful
+Redis，/memcached
+掌握Linux常用指令 ，能进行shell编程
+Ngix
+EasyUI / ExtJS
+JVM性能调优
+Freemaker

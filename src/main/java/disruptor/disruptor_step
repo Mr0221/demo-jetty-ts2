@@ -1,0 +1,6 @@
+1 建立一个Event类
+2 建立一个工厂Event类，用于创建Event类实例对象
+3 建立一个监听类，用于处理数据(Event)类
+4 实例化Disruptor实例，配置一系列参数对Disruptor实例绑定监听实践类，接受并处理数据
+5 Disruptor 核心RingBuffer,Disruptor实例拿到，然后吧数据
+生产出来，把数据加入到RingBuffer的实例中即可

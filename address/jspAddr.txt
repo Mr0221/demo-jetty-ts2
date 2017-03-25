@@ -1,0 +1,88 @@
+http://www.cnblogs.com/zhwl/p/3625360.html
+
+jsp Request获取url信息的各种方法比较
+
+从Request对象中可以获取各种路径信息，以下例子：  
+假设请求的页面是index.jsp,项目是WebDemo，则在index.jsp中获取有关request对象的各种路径信息如下  
+String path = request.getContextPath();  
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";  
+String remoteAddress=request.getRemoteAddr();  
+String servletPath=request.getServletPath();  
+String realPath=request.getRealPath("/");  
+String remoteUser=request.getRemoteUser();  
+String requestURI=request.getRequestURI();  
+out.println("path:"+path+"<br>");  
+out.println("basePath:"+basePath+"<br>");  
+out.println("remoteAddr:"+remoteAddress+"<br>");  
+out.println("servletPath:"+servletPath+"<br>");  
+out.println("realPath:"+realPath+"<br>");  
+out.println("remoteUser:"+remoteUser+"<br>");  
+out.println("requestURI:"+requestURI+"<br>");  
+结果：  
+path:/WebDemo  
+basePath:http://localhost:8683/WebDemo/  
+remoteAddr:127.0.0.1  
+servletPath:/index.jsp  
+realPath:D:\apache-tomcat-6.0.13\webapps\WebDemo\  
+remoteUser:null  
+requestURI:/WebDemo/index.jsp  
+从上不难看出request各个对应方法所代表的含义  
+
+
+
+从request获取各种路径总结：  
+request.getRealPath("url");//虚拟目录映射为实际目录  
+request.getRealPath("./");//网页所在的目录  
+request.getRealPath("../");//网页所在目录的上一层目录  
+假定你的web application(web应用)名称为news，你的浏览器中输入请求路径：http://localhost:8080/uploading/load.jsp  
+request.getContextPath()  =>  /uploading  
+request.getServletPath()  =>  /load.jsp  
+request.getRequestURL()  =>  http://localhost:8080/uploading/load.jsp  
+request.getRealPath("/")  =>   F:\learn\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\uploading\  
+现在request.getRealPath("/") 这个方法已经不推荐使用了  
+可以使用  
+ServletContext.getRealPath(java.lang.String)  instead.  
+request.getSession().getServletContext().getRealPath() 得到工程文件的实际物理路径,也就是绝对地址  
+
+
+
+      //Returns the part of this request's URL from the protocol name up to the query string in the first line of the HTTP request  
+         //  eg.     /manage/editExam.domethod=goExamSet&type=U  
+      String url = request.getRequestURI();    
+      //The returned URL contains a protocol, server name, port number, and server path, but it does not include query string parameters  
+        //eg.      http://127.0.0.1:8080/manage/editExam.domethod=goExamSet&type=U  
+      StringBuffer url_buffer = request.getRequestURL();  
+  HttpServletRequest 的这两种方法都只能得到不包含参数的请求url，区别如下：  
+1 前者返回相对路径，后者返回完整路径  
+2 前者返回string ，后者返回stringbuffer  
+得到完整请求url可以通过如下方法，getQueryString()得到的是url后面的参数串，和前者相加就是带参数的请求路径了  
+  String queryString = request.getQueryString();  
+ring fullPath = url + queryString;   // 或者是url_buffer.toString()+queryString; 
+
+1、request.getRequestURL()
+
+返回的是完整的url，包括Http协议，端口号，servlet名字和映射路径，但它不包含请求参数。
+2、request.getRequestURI()
+
+得到的是request URL的部分值，并且web容器没有decode过的
+
+3、request.getContextPath() 
+返回 the context of the request.
+
+4、request.getServletPath() 
+返回调用servlet的部分url.
+
+5、request.getQueryString() 
+返回url路径后面的查询字符串
+
+
+示例：
+
+当前url：http://localhost:8080/CarsiLogCenter_new/idpstat.jsp?action=idp.sptopn
+
+request.getRequestURL() http://localhost:8080/CarsiLogCenter_new/idpstat.jsp
+request.getRequestURI() /CarsiLogCenter_new/idpstat.jsp
+request.getContextPath()/CarsiLogCenter_new
+request.getServletPath() /idpstat.jsp
+
+request.getQueryString()action=idp.sptopn

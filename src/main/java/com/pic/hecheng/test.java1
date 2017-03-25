@@ -1,0 +1,102 @@
+package com.pic.hecheng;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import com.sun.image.codec.jpeg.ImageFormatException;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
+
+public class test {
+	
+	public static void generateWaterImage(String logo, String srImg, String destImg ,String str, int x, int y ){
+		//创建原始图片的文件关联对象
+				File file = new File(srImg);
+				//将文件对象换成Image 对象
+				BufferedImage src;
+				try {
+					src = ImageIO.read(file);
+					int width =  src.getWidth(null);
+					int height = src.getHeight(null);
+					//在内存中构建原始图像缓冲区（构建画布）
+					BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+					Graphics g = buff.createGraphics();
+					g.drawImage(src, 0, 0, width, height, null);
+					
+					//水印合成
+					File logo1 = new File(logo);
+					Image logoImg = ImageIO.read( logo1);
+					int w = logoImg.getWidth(null);
+					int h = logoImg.getHeight(null);
+					g.drawImage(logoImg, x, y, w, h, null);
+					g.dispose();
+					
+					//输出合成后的图片
+					FileOutputStream fout = new FileOutputStream(destImg);
+					JPEGImageEncoder encorder = JPEGCodec.createJPEGEncoder(fout);
+					encorder.encode(buff);
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				
+	}
+	
+	public static void generateWaterText(String srImg, String destImg ,String str, int x, int y ){
+		try {
+		//创建原始图片的文件关联对象
+		File file = new File(srImg);
+		//将文件对象换成Image 对象
+		BufferedImage  src = ImageIO.read(file);
+		int width =  src.getWidth(null);
+		int height = src.getHeight(null);
+		//在内存中构建原始图像缓冲区（构建画布）
+		BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+		Graphics g = buff.createGraphics();
+		g.drawImage(src, 0, 0, width, height, null);
+		
+		//设置文字的字体
+		g.setColor(Color.blue);
+		Font font = new Font("楷书", Font.BOLD, 30);
+		g.setFont(font);
+		g.drawString(str, x, y);//在x, y的坐标位置输出str的内容
+		
+		g.dispose();//释放
+		
+		//生成目标图片
+		FileOutputStream fout = new FileOutputStream(destImg);
+		JPEGImageEncoder encode = JPEGCodec.createJPEGEncoder(fout);
+		encode.encode(buff);
+		fout.close();
+		System.out.println("pic width:"+ width);
+		System.out.println("pic height:"+ height);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (ImageFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public static void main(String[] args) {
+		String srImg ="temp\\com.pic.hecheng\\src\\2.jpg";
+		String destImg= "temp\\com.pic.hecheng\\dest\\copy.jpg";
+		String str ="这是测试字符串";
+		//generateWaterText(srImg,destImg,str, 30, 30);
+		
+		String logo = "temp\\com.pic.hecheng\\src\\1.jpg";
+		generateWaterImage( logo, srImg,  destImg ,null, 60, 60 );
+	}
+
+}

@@ -1,0 +1,6 @@
+http://repo.maven.apache.org/maven2
+http://people.apache.org/repo/m2-snapshot-repository
+http://repo.compass-project.org
+http://192.168.2.40:7777/archiva/repository/internal
+http://repo1.maven.org/maven2
+file:////192.168.2.21/share/m2repo/repository

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>九宫格图片</title>
+<meta name="Keywords" content="关键词，关键词">
+<meta name="description" content="">
+<style type="text/css">
+body{background:url("images/bg.jpg");}
+*{margin:0px; padding:0px;}
+#Course{width:903px; height:480px;border:5px solid #fff;margin:45px auto;background:rgba(0,0,0,0.2);}
+#Course ul li{width:300px; height:160px;float:left;list-style:none;border-right:1px solid #fff; 
+	border-bottom:1px solid #fff;position:relative;}
+#Course ul li img.default{position:relative; z-index:20;}
+#Course ul li a{font-family:"微软雅黑"; font-size:20px;font-weight:bolid;color:#fff;z-index:10;
+width:100%;height:100%;position:absolute;top:0px; left:0px;
+background:rgba(0,0,0,0.7);text-align:center;text-decoration:none;line-height:160px;}
+#Course ul li img{position:absolute;top:0px;left:0px;} 
+</style>
+</head>
+<body>
+<div id="Course">
+<ul>
+<li><img alt="" src="images/img1.png" class="default"/>
+	<a href="#">SEO课程</a>
+	<img alt="" src="images/seor.jpg" class="right"/>
+	<img alt="" src="images/seob.jpg" class="bottom"/>
+</li>
+<li><img alt="" src="images/img2.png" class="default"/>
+	<a href="#">淘宝美工课程</a>
+	<img alt="" src="images/taol.jpg" class="left"/>
+	<img alt="" src="images/taor.jpg" class="right"/>
+	<img alt="" src="images/taob.jpg" class="bottom"/>
+</li>
+<li><img alt="" src="images/img3.png" class="default"/>
+	<a href="#">摄影后期课程</a>
+	<img alt="" src="images/syl.jpg" class="left"/>
+	<img alt="" src="images/syb.jpg" class="bottom"/>
+</li>
+<li><img alt="" src="images/img4.png" class="default"/>
+	<a href="#">软件编程课程</a>
+	<img alt="" src="images/jt.jpg" class="top"/>
+	<img alt="" src="images/jr.jpg" class="right"/>
+	<img alt="" src="images/jb.png" class="bottom"/>
+</li>
+<li><img alt="" src="images/img5.png" class="default"/>
+	<a href="#">网页制作课程</a>
+	<img alt="" src="images/wt.jpg" class="top"/>
+	<img alt="" src="images/wl.jpg" class="left"/>
+	<img alt="" src="images/wr.jpg" class="right"/>
+	<img alt="" src="images/wb.jpg" class="bottom"/>
+</li>
+<li><img alt="" src="images/img6.png" class="default"/>
+	<a href="#">平面设计课程</a>
+	<img alt="" src="images/pt.jpg" class="top"/>
+	<img alt="" src="images/pb.jpg" class="bottom"/>
+	<img alt="" src="images/pl.jpg" class="left"/>
+</li>
+<li><img alt="" src="images/img7.png" class="default"/>
+	<a href="#">淘宝运营课程</a>
+	<img alt="" src="images/taol.jpg" class="left"/>
+	<img alt="" src="images/taor.jpg" class="right"/>
+</li>
+<li><img alt="" src="images/img8.png" class="default"/>
+	<a href="#">室内设计课程</a>
+	<img alt="" src="images/snt.jpg" class="top"/>
+	<img alt="" src="images/snl.jpg" class="left"/>
+	<img alt="" src="images/snr.jpg" class="right"/>
+</li>
+<li><img alt="" src="images/img9.png" class="default"/><a href="#">网络营销课程</a>
+<img alt="" src="images/wlt.jpg" class="top">
+<img alt="" src="images/wll.jpg" class="left">
+</li>
+</ul>
+</div>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+$("#Course ul li").hover(function(){
+	$("a",this).css({"z-index":30});
+	$(this).css({"z-index":28});
+	$("img.top",this).stop().animate({top:"-160px"},300);
+	$("img.left",this).stop().animate({left:"-300px"},300);
+	$("img.bottom",this).stop().animate({bottom:"160px"},300);
+	$("img.right",this).stop().animate({right:"300px"},300);
+},function(){
+	$("a",this).css({"z-index":10});
+	$(this).css({"z-index":20});
+	$("img",this).stop().animate({left:"0px",top:"0px"},300);
+	$(this).siblings().find("img").css({"z-index":"0"});
+	$(this).siblings().find("img.default").css({"z-index":"20"});
+});
+</script>
+</body>
+</html>

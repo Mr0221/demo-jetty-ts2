@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>tanzhou</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+<!--s  -->
+   <!--
+        Parameters for log4j (NOTE: should put this first (for tomcat
+        logging))
+    -->
+  <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.properties</param-value>
+    </context-param>
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>6000</param-value>
+    </context-param>
+    <context-param>
+        <param-name>log4jExposeWebAppRoot</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <!--
+        The directory to load Spring ApplicationContext configuration files,
+        if split more than 1 directories, this param is used in Spring-Context
+        loader defined later.
+    -->
+     <!-- Listener for Log4j -->
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+
+    <!--  <jsp-config>
+        <taglib>
+            <taglib-uri>/WEB-INF/currentUser</taglib-uri>
+            <taglib-location>/WEB-INF/currentUser.tld</taglib-location>
+        </taglib>
+      </jsp-config>
+
+      <session-config id="SessionConfig_1">
+        <session-timeout>120</session-timeout>
+    </session-config>
+
+
+    <error-page id="ExceptionTypeErrorPage_1">
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/jsp/common/error/error.jsp</location>
+    </error-page>
+    <error-page id="ErrorCodeErrorPage_1">
+        <error-code>404</error-code>
+        <location>/cbxExceptionHandler.action</location>
+    </error-page>
+    <error-page id="ErrorCodeErrorPage_2">
+        <error-code>500</error-code>
+        <location>/cbxExceptionHandler.action</location>
+    </error-page>
+       -->
+<!-- E -->
+<!-- File upLoad start A0120-->
+  <servlet>
+    <servlet-name>UploadHandleServlet</servlet-name>
+    <servlet-class>com.fileUpdate.up.UploadHandleServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>UploadHandleServlet</servlet-name>
+    <url-pattern>/servlet/UploadHandleServlet</url-pattern>
+</servlet-mapping>
+
+<servlet>
+     <servlet-name>ListFileServlet</servlet-name>
+     <servlet-class>com.fileUpdate.down.ListFileServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+     <servlet-name>ListFileServlet</servlet-name>
+    <url-pattern>/servlet/ListFileServlet</url-pattern>
+</servlet-mapping>
+
+<servlet>
+    <servlet-name>DownLoadServlet</servlet-name>
+    <servlet-class>com.fileUpdate.down.DownLoadServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>DownLoadServlet</servlet-name>
+    <url-pattern>/servlet/DownLoadServlet</url-pattern>
+</servlet-mapping>
+<!-- File upLoad end A0120-->
+
+<!-- Jasper start  A0130-->
+<servlet>
+    <servlet-name>Jasper</servlet-name>
+    <servlet-class>com.jasperreport.pdf.EchoHello</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>Jasper</servlet-name>
+    <url-pattern>/test</url-pattern>
+</servlet-mapping>
+<!-- Jasper end   A0130-->
+<!--  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener> -->
+
+<!-- spring security s A0260-->
+<!-- <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring-security.xml</param-value>
+</context-param>
+<listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+</listener>
+<filter>
+  <filter-name>springSecurityFilterChain</filter-name>
+  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+</filter>
+
+<filter-mapping>
+  <filter-name>springSecurityFilterChain</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping> -->
+<!-- spring security e A0260-->
+
+<!-- <servlet>
+<servlet-name>srpingmvc</servlet-name>
+<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+<init-param>
+<param-name>contextConfigLocation</param-name>
+<param-value>classpath:applicationContext.xml</param-value>
+</init-param>
+</servlet>
+<servlet-mapping>
+<servlet-name>srpingmvc</servlet-name>
+<url-pattern>/</url-pattern>
+</servlet-mapping> -->
+<!-- list html s -->
+<servlet>
+    <servlet-name>ListHtml</servlet-name>
+    <servlet-class>com.listWeb.pro.ListHtml</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ListHtml</servlet-name>
+    <url-pattern>/ls</url-pattern>
+</servlet-mapping>
+<!-- list html e -->
+
+
+
+<!-- -Struct2 S -->
+   <!-- <filter id="Filter_2">
+        <filter-name>actionContextCleanUp</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.ActionContextCleanUp</filter-class>
+    </filter>
+    <filter-mapping id="Filter_Mapping_2">
+        <filter-name>actionContextCleanUp</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter id="Filter_3">
+        <filter-name>struts2</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
+    </filter>
+    <filter-mapping id="Filter_Mapping_3">
+        <filter-name>struts2</filter-name>
+        <url-pattern>/*</url-pattern>
+
+            Followings dispatcher is important for request.getDispatcher() to
+            forward to *.action, without following definitions, *.action will not be
+            forwarded by the application (e.g. Tomcat/ Jetty)
+
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+ -->
+
+<!-- Struct2 E -->
+
+</web-app>

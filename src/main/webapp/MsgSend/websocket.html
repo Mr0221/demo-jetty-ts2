@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Testing websocket</title>
+</head>
+<body>
+    <div>
+        <input type="submit" value="Start" onclick="start()" />
+        <input type="button" value="Stop" onclick="stop()" />
+    </div>
+    <div id="messages"></div>
+    <script type="text/javascript">
+        console.log(window.WebSocket);
+        var webSocket = new WebSocket('ws://127.0.0.1:8086/web/websocket');
+
+        webSocket.onerror = function(event) {
+            onError(event)
+        };
+
+        webSocket.onopen = function(event) {
+            onOpen(event)
+        };
+
+        /* webSocket.onclose = function(event){
+            alert("要离开了？");
+        }; */
+
+        webSocket.onmessage = function(event) {
+            onMessage(event)
+        };
+
+        function onMessage(event) {
+            document.getElementById('messages').innerHTML += '<br />'
+                    + event.data;
+        }
+
+        function onOpen(event) {
+            document.getElementById('messages').innerHTML = 'Connection established';
+        }
+
+        function onError(event) {
+            alert(event.data);
+        }
+
+        function start() {
+            webSocket.send('hello');
+            return false;
+        }
+
+        function stop() {
+            webSocket.send('bye bye!');
+            webSocket.close();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+
+<body>
+<!-- <embed src='http://player.youku.com/player.php/sid/XMTgwOTA0MjM4OA==/v.swf' allowFullScreen='true' quality='high' width='480' height='400' align='middle' allowScriptAccess='always' type='application/x-shockwave-flash'></embed> -->
+ <video width="820" height="640" controls="controls" id="myVideo">
+<!-- <source src="../src.av/test.mp4" type="video/mp4"/> -->
+<source src="http://gslb.miaopai.com/stream/Y8-1bg~ZbWlLOQ4zYzR8Hw__.mp4" type="video/mp4"/>
+
+对不起，您的浏览器不支持video视频标签
+</video><br/>
+<input type="button" value="变大" onclick="bigger()">
+<input type="button" value="变小" onclick="smaller()">
+<input type="button" value="暂停" onclick="pause()">
+<script type="text/javascript">
+ function bigger(){
+     var myVideo = document.getElementById("myVideo");
+     myVideo.width=880;
+     myVideo.height = 680;
+ }
+
+ function smaller(){
+     var myVideo = document.getElementById("myVideo");
+     myVideo.width=600;
+     myVideo.height = 580;
+ }
+ function pause(){
+     var myVideo = document.getElementById("myVideo");
+     if(myVideo.paused){
+         myVideo.play();
+     }else{
+         myVideo.pause();
+     }
+ }
+</script>
+
+</body>
+</html>

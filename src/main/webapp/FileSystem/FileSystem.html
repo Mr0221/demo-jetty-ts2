@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <title>潭州学院-探秘windows的Activex控件 </title>
+  <meta name="Generator" content="EditPlus">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <script type="text/javascript">
+	/*
+		工作的时候，自己找方法
+		1.文件的所有基本操作
+		2.文件夹的所有基本操作
+		3.关于所有磁盘的基本操作
+		4.如何自己去学习扩展
+	excel 能够同步到你的系统后台。数据库
+	word 能够同步到你的系统后台。数据库
+	mart。识别用户，ActiveX绑定他的机器唯一标识码、当前机器。 做了安全认证
+	应用程序。
+	ActiveX   
+		操作excel、操作word、操作应用程序
+	*/
+		var fso = new ActiveXObject("Scripting.FileSystemObject");
+		//新建文件
+		function createFile(){
+					var filexz = fso.CreateTextFile("c:\\小张.txt");
+					filexz.WriteLine("那这个只有 微软的浏览器内核才可以用哇。很多浏览器都支持ActiveX控件！");
+					filexz.Close();
+				for(i=0;i<100;i++){
+					//创建一个文件对象，返回一个文件流 本地磁盘创建好
+					var file = fso.CreateTextFile("c:\\file\\.Pomelo_shy"+i+".txt");//创建一个文件对象，返回一个文件流
+					//写入一行内容，针对刚刚创建的文件
+					file.WriteLine("12312321dsafdsa fdsa fds fdsa fdsa fds fdsa fdsa fdsa fdsa fdsa fda fd safd fsd ");
+					file.Close();
+				}
+		}
+		//删除文件 
+		function delFile(){
+			for(i=0;i<100;i++){
+					//调用DeleteFile 删除本地磁盘的文件
+					fso.DeleteFile("c:\\file\\.Pomelo_shy"+i+".txt");
+				}
+		}
+		//读取文件内容
+		function readFile(){
+			//打开文本文档对象，获取到一个文件流
+			var file = fso.OpenTextFile("c:\\小张.txt");
+			//读取一行数据
+			var content = file.ReadLine();
+			//关闭流
+			file.Close();
+			//弹出一个提示框，提示读取到的内容
+			alert(content);
+		}
+		//复制文件
+		function copyFile(){
+			fso.CopyFile("c:\\小张.txt","d:\\追求.txt");
+		}
+		//新建文件夹 \
+		function createFolder(){
+			//判断文件夹是否存在
+			if(!fso.FolderExists("c:\\懒人")){
+				//创建一个文件夹
+				fso.CreateFolder("c:\\懒人");
+			}
+			//创建新文件
+			var file =	fso. CreateTextFile("c:\\懒人\\沐辰.txt");
+			file.WriteLine("Litter Star 探花  桃夭");
+			file.Close();
+		}
+		//删除文件夹
+		function deleteFolder(){
+			//删除文件夹 参数 是路径
+			fso.DeleteFolder("C:\\file");
+		}
+		//复制文件夹
+		function copyFolder(){
+			//复制文件夹
+			fso.CopyFolder("c:\\懒人","d:\\Exception");
+		}
+		//获取本地的分区驱动器
+		function getDrive(){
+			
+			var drives =	new Enumerator(fso.Drives) ;//集合
+			while(!drives.atEnd()){
+					var drive = drives.item();
+					alert("驱动器："+drive.DriveLetter);
+					drives.moveNext();
+			}
+		}
+		//获取每个驱动器的文件（夹）列表
+		function getFolderList(){
+			var drive = fso.GetDrive("C");//获取C盘驱动
+			var rootFolder = drive.RootFolder;//获取根目录
+			var folders = 	new Enumerator(rootFolder.SubFolders);
+			var str ="<h1>c盘的文件夹列表</h1><br>";
+			while(!folders.atEnd()){
+				 str = str+"<br>"+folders.item().Name;
+				 getFileList(folders.item());
+				 //往下移动一个 
+				 folders.moveNext();
+			}
+			document.getElementById("content").innerHTML=str;
+		}
+		//获取文件列表
+		function getFileList(folder){
+			var files = 	new Enumerator(folder.files);
+			var str ="<br><h1>"+folder.Name+"文件列表</h1><br>";
+			while(!files.atEnd()){
+				 str = str+"<br>"+files.item().Name;
+				 //往下移动一个 
+				 files.moveNext();
+			}
+			document.getElementById("contentFile").innerHTML+=str;
+		}
+		//绿色通道。 拍拍贷 无抵押助学贷款  学生证或者工作证明
+		
+		//教大家自己去如何挖掘其他的文件系统的操作方法
+		//如何操作excel 
+	
+  </script>
+ </head>
+
+ <body>
+		<button onclick="createFile();">创建文件</button>
+		<button onclick="delFile();">删除文件</button>
+		<button onclick="readFile();">读取文件</button>
+		<button onclick="copyFile();">复制文件</button>
+		<button onclick="createFolder();">创建文件夹</button>
+		<button onclick="deleteFolder();">删除文件夹</button>
+		<button onclick="copyFolder();">复制文件夹</button>
+		<button onclick="getDrive()">获取驱动器</button>
+		<button onclick="getFolderList()">获取文件夹列表</button>
+			<button onclick="getFileList()">获取文件列表</button>
+		<div id="content"></div>
+		<div id="contentFile"></div>
+ </body>
+</html>

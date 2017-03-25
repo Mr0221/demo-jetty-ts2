@@ -1,0 +1,9 @@
+/logs/*
+/.settings/*
+/target/*
+/.classpath
+/.project
+/error.log
+/rar/*
+/mail.log
+/catalina.home_IS_UNDEFINED/*

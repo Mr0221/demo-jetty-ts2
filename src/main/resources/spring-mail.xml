@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+   <property name="host" value="${mail.host}"></property>
+   <property name="javaMailProperties">
+       <props>
+          <prop key="mail.smtp.auth">true</prop>
+          <prop key="mail.smtp.timeout">99999</prop>
+       </props>
+   </property>
+   <property name="username" value="${mail.username}"></property>
+   <property name="password" value="${mail.password}"></property>
+</bean>
+</beans>
+
+<!-- ping smtp.163.com
+telnet smtp.163.com 25 -->

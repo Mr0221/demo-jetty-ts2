@@ -1,0 +1,164 @@
+package com.pdf.gen.pro;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.xdoc.Barcode;
+import org.xdoc.Body;
+import org.xdoc.Chart;
+import org.xdoc.Color;
+import org.xdoc.Img;
+import org.xdoc.Para;
+import org.xdoc.Rect;
+import org.xdoc.SText;
+import org.xdoc.Table;
+import org.xdoc.Text;
+import org.xdoc.XDoc;
+
+public class PDFUtil {
+    public static Log logger = LogFactory.getLog(PDFUtil.class);
+    public static void pdfGenerator(final String filePath){
+        logger.debug("file path: " + filePath);
+        //xdoc 对象
+        final XDoc xdoc = new XDoc();
+        //xdoc 元数据
+        xdoc.getMeta().setAuthor("eddy");
+        xdoc.getMeta().setTitle("生成PDF文件");
+        logger.debug("meta data");
+        //background
+        final Rect back = xdoc.getBack();
+        final Img img = new Img("http://i.meizitu.net/2014/02/20140222jp15.jpg");
+        img.setLocation(100, 0);
+        back.add(img);
+        logger.debug("background");
+        //文字
+        final Text logoText = new Text("妹子网");
+        logoText.setFontSize(12);
+        logoText.setBold(true);
+        logger.debug("text");
+        //段落
+        final Para logoPara = new Para(logoText);
+        logoPara.setIndent(540);//缩进
+        back.add(logoPara);
+        logger.debug("para");
+        //s水印
+        final SText stext = new SText("妹子网");
+        stext.setColor(null);
+        stext.setFillColor(Color.lightgray);
+        stext.setBold(true);
+        stext.setSize(400, 200);
+        stext.setRotate(-45);//倾斜角度
+        stext.setLocation((back.getWidth()-stext.getWidth())/2, (back.getHeight()-stext.getHeight())/2);
+        back.add(stext);
+        logger.debug("水印");
+        //约吗
+        final Rect pageRect = new Rect();
+        Para para = new Para("$#page#/$#pages#");
+        para.setAlign(Para.ALIGN_CENTER);
+        pageRect.add(para);
+        pageRect.setColor(null);
+        pageRect.setWidth(200);
+        pageRect.setLocation((back.getWidth()-pageRect.getWidth())/2, back.getHeight()-pageRect.getHeight()-20);
+        back.add(pageRect);
+        logger.debug("page index");
+        //body
+        final Body body = xdoc.getBody();
+        final Para tile = new Para("code gen pdf doc", 1);
+        //title
+        tile.setAlign(Para.ALIGN_CENTER);
+        body.add(tile);
+
+        body.add(new Para("para", 2));
+        logger.debug("body title");
+        para = new Para();
+        para.setIndent(40);//
+        para.add(new Text("缩进40"));
+        Text text = new Text("隶书18");
+        text.setFont("隶书", 18);
+        para.add(text);
+        logger.debug("font");
+
+        text = new Text("粗体");
+        text.setBold(true);
+        para.add(text);
+
+        text = new Text("红色文字灰色背景");
+        text.setFontSize(20);
+        text.setFontColor(Color.red);
+        text.setBackColor(Color.gray);
+        text.setUnderline(2, Color.blue);
+        para.add(text);
+        logger.debug("font background color");
+        text = new Text("妹子网");
+        text.setHref("http://www.mzitu.com/");
+        text.setUnderline(false);
+        text.setFontColor(Color.blue);
+        para.add(text);
+        logger.debug("href");
+        // new para
+        para = new Para("居中带前缀，行间距10， 背景灰色");
+        para.setAlign(Para.ALIGN_CENTER);
+        para.setPrefix(Para.PREFIX_RECT);
+        para.setLineSpacing(10);
+        para.setBackColor(new Color("#f0f0f0"));
+        logger.debug("setLineSpacing");
+
+        body.add(para);
+        body.add(new Para("图片", 2));
+        body.add(new Para(new Img("http://ww4.sinaimg.cn/mw1024/9d52c073gw1f9t3w935rbj20k80qzn1b.jpg")));
+        logger.debug("pic img");
+        //饼图
+        body.add(new Para("图标", 2));
+        final String[][] charData = new String[][]{{"salar","mout"},{"3k", "1"}, {"4k", "2"}, {"5k", "3"}};
+        final Chart pie = new Chart(Chart.TYPE_PIE, charData);
+        pie.setWidth(800);
+        body.add(new Para(pie));
+        logger.debug("拼图");
+        //柱状图
+        final Chart bar = new Chart(Chart.TYPE_BAR, charData);
+        bar.setSize(800, 400);
+        bar.setTitle("Salary 分布");
+        body.add(new Para(bar));
+        logger.debug("柱状图");
+        //折线
+        final Chart line = new Chart(Chart.TYPE_LINE, charData);
+        line.setSize(800, 400);
+        line.setTitle("Salary 分布");
+        body.add(new Para(line));
+        logger.debug("折线状图");
+        body.add(new Para("eddy", 2));
+        //二维码
+        final Barcode qrcode =new Barcode(Barcode.TYPE_QRCode, "http://www.mzitu.com/hot");
+        body.add(qrcode);
+        logger.debug("二维码");
+        //表格
+        body.add(new Para("表格", 2));
+        final int row =4;//行数
+        final int col = 6;//列
+        final Table table = new Table (row, col);
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                table.add(new Text("row:"+i+1+",col:"+j+1 ), i, j);
+            }
+        }
+        //合并单元格
+        table.add(new Text("合并单元格"),1, 1, 2, 2);
+        logger.debug("table");
+        body.add(new Para(table));
+        body.add(new Para(table));
+        try {
+            xdoc.to(new File(filePath));
+        } catch (final IOException e) {
+            logger.error(e);
+            e.printStackTrace();
+        }
+
+
+    }
+    public static void main(final String[] args) {
+        PDFUtil.pdfGenerator("./temp/pdf/fisrt.pdf");
+    }
+
+}

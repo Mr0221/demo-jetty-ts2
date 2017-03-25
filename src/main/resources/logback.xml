@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+   <property name="LOGER_PATH" value="./logs" />
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${LOGER_PATH}/slf4j_log.log</file>
+
+    <encoder>
+      <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="Tomcat_log" class="ch.qos.logback.core.FileAppender">
+    <file>${catalina.home}/logs/shells_slg4j_logs.log</file>
+
+    <encoder>
+      <pattern>%level [%file:%line] %msg%n</pattern>
+    </encoder>
+  </appender>
+
+<logger name="com.slf4j.pro.Slf4J" additivity="false">
+    <appender-ref ref="FILE" />
+  </logger>
+
+  <root level="debug">
+    <appender-ref ref="Tomcat_log" />
+     <appender-ref ref="FILE" />
+    <appender-ref ref="STDOUT" />
+  </root>
+
+</configuration>
