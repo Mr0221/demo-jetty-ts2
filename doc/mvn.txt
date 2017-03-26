@@ -1,0 +1,11 @@
+打包：mvn package
+编译：mvn compile
+编译测试程序：mvn test-compile
+清空：mvn clean
+运行测试：mvn test
+生成站点目录: mvn site
+生成站点目录并发布：mvn site-deploy
+安装当前工程的输出文件到本地仓库: mvn install
+
+http://www.cnblogs.com/adolfmc/archive/2012/07/31/2616908.html
+http://www.cnblogs.com/PatrickLee/archive/2012/10/31/2747398.html
