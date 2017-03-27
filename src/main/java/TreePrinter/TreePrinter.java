@@ -12,7 +12,7 @@ public class TreePrinter {
 	        this.val = val;
 	    }
 	}
-	
+	//34
     public int[][] printTree(TreeNode root) {
         
         if(root==null) return null;
