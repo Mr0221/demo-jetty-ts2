@@ -1,0 +1,10 @@
+package sault;
+
+public class Test {
+
+    public static void main(final String[] args) {
+        final String newEncoded = SaltUtil.processSHA256("cbx@123", "ming1");//af6fac3c192f5b434301ec9f150f2506a309944a8338ba8d23bdeee6d978424c
+        System.out.println(newEncoded);
+    }
+
+}

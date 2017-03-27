@@ -1,0 +1,140 @@
+package sault;
+
+import java.security.Provider;
+import java.security.Security;
+
+import org.acegisecurity.providers.encoding.ShaPasswordEncoder;
+
+
+public class SaltUtil {
+    //private static final String SECURITY_KEY = "PBKDF2WithHmacSHA1";	//PBKDF2WithHmacSHA512
+    //private static final Random RANDOM = new SecureRandom();
+
+    private static final int SALT_PASSWORD_LEN = 64;
+    private static final int ITERATIONS = 1000;
+    private static final int KEY_LENGTH = 256;
+    private static final int SALT_LEN_IN_BYTE = 20;
+
+   /* public static boolean isSaltPassword(final User user) {
+        final boolean bNewPwdEncoded = (user.getNewPwdEncoded() == 1);
+        System.out.println("[kckc] isSaltPassword() return " + bNewPwdEncoded);
+        return bNewPwdEncoded;
+    }*/
+
+    public static void listService() {
+        for (final Provider provider : Security.getProviders()) {
+            System.out.println( provider );
+            for ( final Provider.Service service : provider.getServices() ) {
+                if ("SecretKeyFactory".equals(service.getType())) {
+                    System.out.println( service );
+                }
+            }
+        }
+    }
+
+    public static String processSHA256(final String rawPassword, final String salt) {
+        // MessageDigestPasswordEncoder mdpeSha = new MessageDigestPasswordEncoder("SHA-256");
+        final ShaPasswordEncoder sha = new ShaPasswordEncoder(256);
+        sha.setEncodeHashAsBase64(false);
+        //sha.setIterations(ITERATIONS);
+        final String lowerSalt = salt.toLowerCase();
+        final String encodedPassword = sha.encodePassword(rawPassword, lowerSalt);
+
+        return encodedPassword;
+    }
+
+    /* keep here for reference
+    @SuppressWarnings("restriction")
+    public static String encrypt(String plainText, String userCode) throws Exception {
+        System.out.println("[kckc] encrypt(" + plainText + ", " + userCode + ") is called.");
+
+        //get salt
+        //salt = generateSalt();
+        String salt = genSalt(userCode);
+
+        byte[] saltBytes = salt.getBytes("UTF-8");
+
+        // Derive the key
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        PBEKeySpec spec = new PBEKeySpec(
+                plainText.toCharArray(),
+                saltBytes,
+                ITERATIONS,
+                KEY_LENGTH);
+
+        SecretKey secretKey = factory.generateSecret(spec);
+        SecretKeySpec secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
+
+        //encrypt the message
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secret);
+        AlgorithmParameters params = cipher.getParameters();
+
+        byte[] ivBytes = params.getParameterSpec(IvParameterSpec.class).getIV();
+        byte[] encryptedTextBytes = cipher.doFinal(plainText.getBytes("UTF-8"));
+
+        String resultStr = DatatypeConverter.printBase64Binary(encryptedTextBytes);
+        System.out.println("[kckc] encrypt() = " + resultStr + ", and length = " + resultStr.length());
+        return resultStr;
+    }
+
+    @SuppressWarnings("restriction")
+    public static String decrypt(String encryptedText, String userCode)  throws Exception {
+        System.out.println("[kckc] decrypt(" + encryptedText + ", " + userCode + ") is called.");
+
+        String salt = genSalt(userCode);
+
+        byte[] saltBytes = salt.getBytes("UTF-8");
+        byte[] encryptedTextBytes = DatatypeConverter.parseBase64Binary(encryptedText);
+
+        // Derive the key
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        PBEKeySpec spec = new PBEKeySpec(
+                encryptedText.toCharArray(),
+                saltBytes,
+                ITERATIONS,
+                KEY_LENGTH
+                );
+
+        SecretKey secretKey = factory.generateSecret(spec);
+        SecretKeySpec secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
+
+        // Decrypt the message
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        AlgorithmParameters params = cipher.getParameters();
+        byte[] ivBytes = params.getParameterSpec(IvParameterSpec.class).getIV();
+        cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(ivBytes));
+
+
+        byte[] decryptedTextBytes = null;
+        String resultStr = "";
+        decryptedTextBytes = cipher.doFinal(encryptedTextBytes);
+        resultStr = DatatypeConverter.printBase64Binary(decryptedTextBytes);
+
+        System.out.println("[kckc] decrypt() = " + resultStr + ", and length = " + resultStr.length());
+        return resultStr;
+    }
+
+    private static String genSalt(String baseSaltStr) throws UnsupportedEncodingException {
+        byte resultSalt[] = new byte[SALT_LEN_IN_BYTE];
+        byte salt[] = baseSaltStr.getBytes("UTF-8");
+
+        int i = 0;
+        while (i < SALT_LEN_IN_BYTE) {
+            int j = i % salt.length;
+
+            if (i > 0 && j == 0) {
+                resultSalt[i++] = (byte) 0xab;
+            }
+
+            if (i < SALT_LEN_IN_BYTE) {
+                resultSalt[i] = salt[j];
+            }
+
+            i++;
+        }
+
+        return new String(resultSalt);
+    }
+    */
+}
