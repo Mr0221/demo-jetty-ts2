@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<!--
+  - Scheduler context for Quartz.
+  - Note that Quartz Jobs are throwaway objects, in contrast to shared TimerTasks.
+  -->
+<beans>
+
+    <!-- Quartz Scheduler, with pre-registered triggers -->
+    <!-- Will automatically start scheduling on context startup -->
+    <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref local="genAlertsTrigger"/>
+                <ref local="genStatusAlertsTrigger"/>
+                <ref local="genReportAndSendMailTrigger"/>
+                <ref local="odbmsProductInMessageTrigger"/>
+                <ref local="aiInMessageTrigger"/>
+                <ref local="apProductInMessageTrigger"/>
+                <ref local="odbmsMasterInCSVTrigger"/>
+                <ref local="odbmsOrderInMessageTrigger"/>
+                <ref local="odbmsMigrationInMessageTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Job definition that delegates to the specified 'imageDatabase' method -->
+    <!-- Convenient way of invoking existing business logic instead of writing a job -->
+    <bean id="genAlertsJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="genAlertsHandler"/>
+        <property name="targetMethod" value="process"/>
+    </bean>
+
+    <bean id="genStatusAlertsJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="genStatusAlertsHandler"/>
+        <property name="targetMethod" value="process"/>
+    </bean>
+
+    <bean id="genReportAndSendMailJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="genReportAndSendMailHandler"/>
+        <property name="targetMethod" value="process"/>
+    </bean>
+
+    <bean id="genAlertsHandler" autowire="byName" class="com.core.merchant.cpm.handler.GenAlertsHandler">
+        <!--
+          - define the reference module code & property name mappings
+          - key: module code, value: the name of property to be took as reference
+          - by default, the GenAlertsHandler will find the property name automatically
+          - e.g, for the "Style" module code, GenAlertsHandler will take "styleNo" or "styleRef" as reference.
+          - if you want another column to be the reference, then define the following mapping.
+        <property name="refPropertyMapping">
+            <map>
+                <entry key="Style" value="styleReference"/>
+            </map>
+        </property>
+         -->
+    </bean>
+
+    <bean id="genStatusAlertsHandler" autowire="byName" class="com.core.merchant.cpm.handler.GenStatusAlertsHandler">
+        <property name="sender" value="${email.sender}"/>
+   </bean>
+    <bean id="genReportAndSendMailHandler" autowire="byName" class="com.core.merchant.cpm.handler.GenReportAndSendMailHandler">
+   </bean>
+
+    <!-- Trigger for the job defined above -->
+    <!-- Registered by the 'scheduler' bean -->
+    <bean id="genAlertsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="genAlertsJobDetail"/>
+        <!-- run one 00:05AM every day: 0 5 0 * * ?-->
+        <property name="cronExpression" value="0 5 0 * * ?"/>
+    </bean>
+     <bean id="genStatusAlertsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="genStatusAlertsJobDetail"/>
+        <!-- run every 5 minutes: 0 0/5 * * * ?-->
+        <property name="cronExpression" value="0 0/5 * * * ?"/>
+    </bean>
+    <bean id="genReportAndSendMailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="genReportAndSendMailJobDetail"/>
+        <!-- run one 00:05AM every day: 0 5 0 * * ?-->
+        <!-- <property name="cronExpression" value="0 5 0 * * ?"/> -->
+        <property name="cronExpression" value="${integration.cronExpression}"/>
+    </bean>
+
+    <bean id="aiInMessageTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="aiInMessageJobDetail"/>
+        <!-- run every 15 minutes: 0 0/15 * * * ?-->
+        <property name="cronExpression" value="${integration.cronExpression}"/>
+    </bean>
+
+    <bean id="aiInMessageJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+            <property name="targetObject" ref="aiInMessageHandler"/>
+            <property name="targetMethod" value="process"/>
+    </bean>
+
+    <bean id="aiInMessageHandler" class="com.core.merchant.integration.handler.IntegrationMessageHandler">
+        <property name="dynamicEntityDao" ref="dynamicEntityDao"/>
+        <property name="fileReceiver" ref="aiInFileReceiver"/>
+        <property name="baseFolder" value="${integration.baseFolder}/${integration.AI_IN}"/>
+        <property name="processorManager" ref="processorManager"/>
+        <property name="processorSelectors">
+                <list>
+                    <map>
+                        <entry key="namePattern" value=".*(\.*)$" />
+                        <entry key="processorKey" value="aiInImage" />
+                    </map>
+                </list>
+            </property>
+    </bean>
+
+
+     <bean id="odbmsProductInMessageTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="odbmsProductInMessageJobDetail"/>
+        <!-- run every 15 minutes: 0 0/15 * * * ?-->
+        <property name="cronExpression" value="${integration.cronExpression}"/>
+    </bean>
+
+    <bean id="odbmsProductInMessageJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+            <property name="targetObject" ref="odbmsProductInMessageHandler"/>
+            <property name="targetMethod" value="process"/>
+    </bean>
+
+    <bean id="odbmsProductInMessageHandler" class="com.core.merchant.integration.handler.IntegrationMessageHandler">
+        <property name="dynamicEntityDao" ref="dynamicEntityDao"/>
+        <property name="fileReceiver" ref="odbmsProductInFileReceiver"/>
+        <property name="baseFolder" value="${integration.baseFolder}/${integration.ODBMS_PRODUCT_IN}"/>
+        <property name="processorManager" ref="processorManager"/>
+            <property name="processorSelectors">
+                <list>
+                    <map>
+                        <entry key="namePattern" value=".*(\.(xml|XML))$" />
+                        <entry key="processorKey" value="productDataXml" />
+                    </map>
+                    <map>
+                        <entry key="namePattern" value=".*(\.(ack|ACK))$" />
+                        <entry key="processorKey" value="productRegistrationAck" />
+                    </map>
+                    <map>
+                        <entry key="namePattern" value=".*(\.(err|ERR))$" />
+                        <entry key="processorKey" value="productRegistrationErr" />
+                    </map>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="apProductInMessageTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="apProductInMessageJobDetail"/>
+        <!-- run every 15 minutes: 0 0/15 * * * ?-->
+        <property name="cronExpression" value="${integration.cronExpression}"/>
+    </bean>
+
+    <bean id="apProductInMessageJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="apProductInMessageHandler"/>
+        <property name="targetMethod" value="process"/>
+    </bean>
+
+    <bean id="apProductInMessageHandler" class="com.core.merchant.integration.handler.IntegrationMessageHandler">
+        <property name="dynamicEntityDao" ref="dynamicEntityDao"/>
+        <property name="fileReceiver" ref="apProductInFileReceiver"/>
+        <property name="baseFolder" value="${integration.baseFolder}/${integration.AP_IN}"/>
+        <property name="processorManager" ref="processorManager"/>
+        <property name="processorSelectors">
+                <list>
+                    <map>
+                        <entry key="namePattern" value=".*(\.(xml|XML))$" />
+                        <entry key="processorKey" value="apProductDataXml" />
+                    </map>
+                </list>
+            </property>
+    </bean>
+
+     <bean id="odbmsMasterInCSVTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="odbmsMasterInCSVJobDetail"/>
+        <!-- run every 15 minutes: 0 0/15 * * * ?-->
+        <property name="cronExpression" value="${integration.cronExpression}"/>
+    </bean>
+
+    <bean id="odbmsMasterInCSVJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+            <property name="targetObject" ref="odbmsMasterInCSVHandler"/>
+            <property name="targetMethod" value="process"/>
+    </bean>
+
+    <bean id="odbmsMasterInCSVHandler" class="com.core.merchant.integration.handler.IntegrationMessageHandler">
+        <property name="dynamicEntityDao" ref="dynamicEntityDao"/>
+            <property name="fileReceiver" ref="odbmsMasterInFileReceiver"/>
+            <property name="baseFolder" value="${integration.baseFolder}/${integration.ODBMS_MASTER_DATA_IN}"/>
+            <property name="processorManager" ref="processorManager"/>
+            <property name="processorSelectors">
+                <list>
+                    <map>
+                        <entry key="namePattern" value=".*(\.(csv|CSV))$" />
+                        <entry key="processorKey" value="masterDataCsv" />
+                    </map>
+                </list>
+            </property>
+    </bean>
+
+    <!--Order Inbound beans -->
+    <bean id="odbmsOrderInMessageTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="odbmsOrderInMessageJobDetail"/>
+        <!-- run every 15 minutes: 0 0/15 * * * ?-->
+        <property name="cronExpression" value="${integration.cronExpression}"/>
+    </bean>
+
+    <bean id="odbmsOrderInMessageJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="odbmsOrderInMessageHandler"/>
+        <property name="targetMethod" value="process"/>
+    </bean>
+
+     <bean id="odbmsOrderInMessageHandler" class="com.core.merchant.integration.handler.IntegrationMessageHandler">
+        <property name="dynamicEntityDao" ref="dynamicEntityDao"/>
+        <property name="fileReceiver" ref="odbmsOrderInFileReceiver"/>
+        <property name="baseFolder" value="${integration.baseFolder}/${integration.ODBMS_ORDER_IN}"/>
+        <property name="processorManager" ref="processorManager"/>
+        <property name="processorSelectors">
+            <list>
+                <map>
+                    <entry key="namePattern" value=".*(\.(xml|XML))$" />
+                    <entry key="processorKey" value="orderDataXml" />
+                </map>
+                <map>
+                    <entry key="namePattern" value=".*(\.(ack|ACK))$" />
+                    <entry key="processorKey" value="orderRegistrationAck" />
+                </map>
+                <map>
+                    <entry key="namePattern" value=".*(\.(err|ERR))$" />
+                    <entry key="processorKey" value="orderRegistrationErr" />
+                </map>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="odbmsMigrationInMessageTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="odbmsMigrationInMessageJobDetail" />
+        <!-- run every 15 minutes: 0 0/15 * * * ?-->
+        <property name="cronExpression" value="${integration.cronExpression}" />
+    </bean>
+
+    <bean id="odbmsMigrationInMessageJobDetail"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="odbmsMigrationInMessageHandler" />
+        <property name="targetMethod" value="process" />
+    </bean>
+
+    <bean id="odbmsMigrationInMessageHandler" class="com.core.merchant.integration.handler.IntegrationMessageHandler">
+        <property name="dynamicEntityDao" ref="dynamicEntityDao"/>
+        <property name="fileReceiver" ref="odbmsProductDataMigrationFileReceiver" />
+        <property name="baseFolder" value="${integration.baseFolder}/${integration.PRODUCT_MIGRATION_IN}"/>
+        <property name="processorManager" ref="processorManager" />
+        <property name="processorSelectors">
+            <list>
+                <map>
+                    <entry key="namePattern" value=".*(\.(xml|XML))$" />
+                    <entry key="processorKey" value="migrationDataXml" />
+                </map>
+            </list>
+        </property>
+    </bean>
+</beans>
