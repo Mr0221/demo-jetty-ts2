@@ -12,8 +12,7 @@ public class AdminServiceImplement implements AdminService {
     @Resource(name="adminDao")
     private AdminDao dao;
 
-    @Override
-	public Admin findByCode(final String code) {
+    public Admin findByCode(final String code) {
         return dao.findByCode(code);
     }
 }
