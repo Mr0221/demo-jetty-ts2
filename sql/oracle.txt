@@ -1,0 +1,493 @@
+user-name:sys as sysdba
+Enter password:p
+
+char varchar2 date number boolean long
+变量名 类型
+var1 char(15);
+married booelan := true;
+psal number(7,2);
+
+
+declare
+pnumber number(7,2);
+pname varchar2(20);
+pdate date;
+begin
+  pnumber :=1;
+  dbms_output.put_line(pnumber);
+  pname := 'Tom';
+  dbms_output.put_line(pname);
+  pdate :=sysdate;
+  dbms_output.put_line(pdate);
+  dbms_output.put_line(pdate+1);
+end;
+
+引用型变量
+
+my_name emp.ename%type;
+
+--引用型变量
+
+set serveroutput on
+
+declare
+pename emp.ename%type;
+psal emp.sal%type;
+begin
+select ename,sal into pename,psal from emp where empno=7839;
+dbms_out.put_line(pename||"的薪水是"||psal);
+end;
+
+记录性变量
+emp_rec emp%rowtype; 
+emp_rec.ename := 'ADMAMS';
+
+PL/SQL 的程序结构
+declare 
+	说明部分（变量说明 光标申明 例外说明）
+	begin 
+	语句序列（DML语句）
+	exception
+		例外处理语句
+	end;
+	
+	//
+	case 1 
+	if .. then 1;
+	2;
+	end if;
+	
+	case 2;
+	IF  ..then 语句序列;
+	else 2;
+	end if;
+	
+	case 3;
+	if .. then ..;
+	elsif .. then ..;
+	else ..;
+	end if;
+	
+	set serveroutput on
+--接受一个键盘输入
+--num：地址值
+accept num prompt '请输入一个数字';
+declare
+ pnum number := &num;
+begin
+ if pnum = 0 then dbms_output.put_line('what u input is:'||pnum);
+  elsif pnum = 1 then dbms_output.put_line('what u input is:'||pnum);
+   elsif pnum = 2 then dbms_output.put_line('what u input is:'||pnum);
+ else dbms_output.put_line('other');
+ end if;
+end;
+	
+	
+	循环语句
+	
+	case 1
+	while .. loop
+	..
+	end loop;
+	
+	case 2;\
+	loop 
+	exit[when ..]
+	..
+	end loop;
+	
+	case 3;
+	for I in 1..3 loop
+	..;
+	end loop;
+	
+	
+set serveroutput on
+declare
+pnum number :=1;
+begin
+while pnum<11 loop
+dbms_output.put_line(pnum);
+pnum := pnum+1;
+end loop;
+end;
+
+
+set serveroutput on
+accept num prompt('a number');
+declare 
+pinput number := &num;
+pnum number :=1;
+begin
+dbms_output.put_line(pinput);
+Loop exit when pnum>10;
+dbms_output.put_line(pinput||' '|| pnum);
+pnum := pnum +1;
+end loop;
+end;
+
+set serveroutput on;
+declare
+pnum number := 1;
+begin
+for I in 1..3 Loop
+dbms_output.put_line(I);
+end loop;
+end;
+
+//光标 result set
+Cursor 光标名 [(参数 类型[])]
+is select 语句;
+cursor c1 select ename from emp;
+//打开光标
+open c1;
+//关闭
+close c1;
+//取一光标
+fetch c1 into pename;(取一行光标到变量) 
+--当前指针指向的值 
+--指向下一行
+
+
+/*
+  1 光标的属性
+  %found 
+  %notfound
+  %isopen : 判断光标是否打开
+  %rowcount :影响的行数
+  2 光标数的限制： 最多300个光标
+  alter system set open_cursors = 400 scope=both;
+  scope的取值： both, menory, spfile(数据库需要重启)
+*/
+
+set serveroutput on
+declare
+cursor cemp is select ename, sal from emp;
+pename emp.ename%type;
+psal emp.sal%type;
+begin
+open cemp;
+loop
+fetch cemp into pename, psal;
+--exit 2 hasDate
+exit when cemp%notfound;
+dbms_output.put_line(pename||'的薪水是'||psal);
+end loop;
+close cemp;
+end;
+
+//z涨工资
+set serveroutput on
+declare
+cursor cemp is select empno,empjob from emp;
+pempno emp.empno%type;
+pjob emp.empjob%type;
+begin
+rollback;
+open cemp;
+loop fetch cemp into pempno, pjob; 
+exit when  cemp%notfound;
+  if pjob='president' then update emp set sal=sal+1000 where empno=pempno;
+ elsif pjob='manager'then update emp set sal= sal+800 where empno=pempno;
+ else update emp set sal = sal+400 where empno=pempno;
+end if;
+end loop;
+close cemp;
+commit;
+dbms_output.put_line('increate salary done');
+end;
+
+
+//带参光标
+cursor cemp(dno number) is select ename from emp where deptno=dno;
+open cemp(10);
+close cemp;
+
+系统例外
+No_data_found(没有找到数据)
+Too_many_rows(select..into语匹配)
+zero_divide 0除
+value_error 算术 转换错误
+timeout_on_resource 在等待资源时发生意外
+
+
+set serveroutput on
+declare
+pename emp.ename%type;
+begin
+select ename into pename from emp where empno=123;
+exception
+when no_data_found then dbms_output.put_line('没找到其他员工');
+when others then dbms_output.put_line('other exceptions');
+end;
+
+自定义意外
+No_data exception;
+
+raise no_data;
+
+when no_data then 
+
+//
+
+set serveroutput on
+declare 
+cursor cdept is select deptno from dept;
+pdeptno dept.deptno%type;
+cursor cemp(dno number) is select sal from emp where deptno = dno;
+psal emp.sal%type;
+count1 number;
+count2 number;
+count3 number;
+saltotal number;
+begin
+open cdept;
+
+loop
+	fetch cdept into pdeptno;
+exit when cdept%notfount;
+	count1 :=0;
+	count2 :=0;
+	count3 :=0;
+	select sum(sal) into saltotal from emp where deptno=pdeptno;
+	open cemp(pdeptno)
+	loop
+		fetch cemp into pcal;
+	exit when cemp%notfount;
+	if psal<3000 then count1:=count1+1;
+	elsif psal<6000 then count2:=count2+1;
+	else count3:=count3+1;
+	end if;
+	end loop;
+	close cemp;
+	insert into msg values(pdeptno,count1,count2,count3,saltotal);
+close cdept;
+commit;
+dbms_output.put_line('job done');
+end;
+
+///////////////////////
+set serveroutput on
+declare
+cursor cdept is select dno,dname from dep;
+pdno dep.dno%type;
+pdname dep.dname%type;
+
+cursor cgrade(coursename varcher, depno number)
+	is select grade from sc where cno=(select cno from course where cname=coursename)
+				and sno in(select sno from student where dno=depno);
+pgrade sc.grade%type;
+count1 number, count2 number,count3 number;
+avggrade number;
+pcoutseName varchar2='大学物理'；
+begin
+	open cdept;
+	loop
+	fetch cdept into pdno,pdname; 
+	exit when cdept%notfound;
+	count1:=0;count2:=0;count3:=0;
+	select avg(grade) into avggrade from sc where cno=(select cno from course where cname=pcourseName)
+					and sno in(select sno from student where dno=pdno);
+	open cgrade(pcourseName,pdno);
+	loop
+		fetch cgrade into pgrade;
+		exit when cgrade%notfound;
+		if pgrade<60 then count1:=count1+1;
+		elsif pgrade<85 then count2:=count2+1;
+		else count3:=count3+1;
+		end if;
+	close cgrade;
+	insert into msg1 values(pcourseName,pdno,count1,count2,count3,avggrade);
+	end loop;
+	close cdept;
+	commit;
+	dbms_output.line_line('job done');
+end;
+
+
+存储过程 存储函数 
+指存储在数据库中供所有用湖程序调用的子程序叫存储过程 存储函数	
+	同：完成特定功能的程序
+	异： return返回值（函数）
+
+存储过程
+Create procedure 建立存储过程 函数
+ 语法
+create or replace procedure Name(arg)
+as
+PLSQL subbody；
+
+调用存储过程
+1 exec sayhellword();
+begin
+	sayhellword();
+	sayhellword();
+end;
+
+create or replace procedure sayhellworld
+as
+begin
+	dbms_output.line('say hi');
+end;
+
+
+create or replace procedure sayhellworld
+as
+begin
+	dbms_output.put_line('say hi');
+end;
+
+set serveroutput on
+begin
+  sayhellworld();
+end;
+
+-参数
+create or replace procedure raisesalary(eno in number)
+as
+psal emp.sal%type;
+begin
+  select sal into psal from emp where empno = eno;
+  update emp set sal=sal+100 where empno=eno;
+  dbms_output.put_line('befor: '||psal||' after: '||(psal+100));
+end;
+
+set serveroutput on
+begin
+  raisesalary(1);
+  commit;
+end;
+
+创建存储函数的语法
+create or repleace function Name(arg)
+return TYPE
+as
+PLSQL subbody;
+
+
+create or replace
+function queryempincome(eno in number)
+return number
+as
+psal emp.sal%type;
+pcomm emp.comm%type;
+begin
+select sal,comm into psal,pcomm from emp where empno=eno;
+return psal*12+nvl(pcomm,0);
+end;
+
+out 指定一个或者多个返回参数
+原则：
+一个返回值用 存储函数
+多个返回值 存储过程
+
+create or replace procedure queryempinform(eno in number, pename out varchar2,
+                                  psal out number, pjob out varchar2)
+as
+begin
+  select ename,sal,empjob into pename, psal, pjob from emp where empno=eno;
+end;
+
+java 程序
+
+在out参数中使用光标
+申明包结构
+包头
+包体
+查询某个部门中所有的员工信息
+
+包头
+CREATE OR REPLACE 
+PACKAGE MYPACKAGE AS 
+
+  type empcursor is ref cursor; 
+  procedure queryEmpList(dno in number,empList out empcursor);
+END MYPACKAGE;
+
+包体
+CREATE OR REPLACE
+PACKAGE BODY MYPACKAGE AS
+
+  procedure queryEmpList(dno in number,empList out empcursor) AS
+  BEGIN
+    open empList for select * from emp where deptno=dno;
+  END queryEmpList;
+
+END MYPACKAGE;
+
+desc 查程序包的结构
+desc mypackage;
+	open empList for select * from emp where dempno = dno;
+end queryEmpList;
+end mypackage;
+
+http://www.2cto.com/database/201110/108833.html
+http://snailwong.iteye.com/blog/1259221
+
+ create tablespace ts_cbx5 datafile 'tmp01.dbf' size 20M autoextend on;
+create user cbx_eddy identified by p default tablespace ts_eddy;
+grant create session to cbx_eddy;
+ grant create any view to cbx_eddy;
+grant resource, connect to cbx_eddy;
+grant create table to cbx_eddy;
+ grant unlimited tablespace to cbx_eddy;
+ grant create any directory to cbx_eddy;
+
+SQL> conn cbx_eddy/p;
+SQL> create directory dir3  as '/u01/app/oracle';
+
+grant all on directory dir3 to cbx_eddy;
+grant read,write on directory dir3 to cbx_eddy;
+grant dba to cbx_eddy;
+
+show parameter dump;--查看变量
+set oracle
+
+
+impdp system dumpfile=cbx5_lidl_b2_deploy1-20160804.dump logfile=cbx_sth_upgrade.dmp.log remap_schema=cbx_sth_upgrade:cbx_sth_upgrade
+set NLS_LANG=AMERICAN_AMERICA.AL32UTF8
+
+impdp system dumpfile=cbx5_lidl_b2_deploy1-20160804.dump logfile=cbx_sth_upgrade.dmp.log remap_schema=cbx_sth_upgrade:cbx_sth_upgrade
+set NLS_LANG=AMERICAN_AMERICA.AL32UTF8
+
+
+CREATE TABLESPACE cbx_ldl_up dataFILE 'temp01.dbf' SIZE 20M AUTOEXTEND ON;
+
+
+create user cbx_ldl_up identified by p default tablespace ts_eddy
+
+impdp system dumpfile=cbx5_lidl_b2_deploy1-20160804.dump logfile=cbx5_lidl_b2_deploy1-20160804.log remap_schema=cbx5_lidl_b2_deploy1:cbx_ldl_up
+
+ create user cbx_ldl_up identified by p default tablespace ts_cbx5
+size xxx
+grant create session to cbx_ldl_up
+ grant create any view to
+ grant resource, connect to
+set ORACLE_SID=cbx5
+
+
+///////temp///
+gen.single.user=CBX5_LIDL_DEV2
+gen.single.pwd=p
+gen.single.url=jdbc:oracle:thin:@192.168.2.62:1521:dev
+
+
+////
+gen.single.user=cbx_ldl_up
+gen.single.pwd=p
+gen.single.url=jdbc:oracle:thin:@localhost:1521:orcl
+
+
+  TYPE arry_var IS VARRAY(10) OF VARCHAR2(20);
+  arry_ref2 arry_var; 
+
+arry_ref2 := arry_var('BUYER_USER_CODE', 'STYLIST_USER_CODE','ASSISTANT_USER_CODE', 'DESIGNER_USER_CODE',
+                        'PLANNER_USER_CODE', 'MERCHANT1_USER_CODE', 'PROD_MERCHANT_USER_CODE', 'QA_USER_CODE',
+                        'QA_USER2_CODE');
+
+for i in 1..arry_ref2.count 
+loop
+    
+   if arry_ref2(i) = v_ref2 then  
+   end if;
+end loop;
