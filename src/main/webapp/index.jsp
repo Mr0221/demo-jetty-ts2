@@ -2,9 +2,13 @@
 <%@ page import="javax.naming.InitialContext,javax.sql.DataSource"%>
 <html>
 <head>
-<title>this is index</title>
+<title>JNDI datasource test</title>
 </head>
 <body>
-<h2>welcome!</h2>
+<h2>数据源初始化成功！</h2>
+<%
+    InitialContext context = new InitialContext();
+    DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/osworkflow");
+%>
 </body>
 </html>
