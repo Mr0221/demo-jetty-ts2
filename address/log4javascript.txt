@@ -1,2 +1,0 @@
-http://www.cnblogs.com/weep/articles/2378864.html
-使用log4javascript来做日志记录

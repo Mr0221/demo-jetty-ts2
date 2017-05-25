@@ -1,3 +1,0 @@
-browser-sync start --server  --files "**"
-
-https://segmentfault.com/a/1190000002607627
