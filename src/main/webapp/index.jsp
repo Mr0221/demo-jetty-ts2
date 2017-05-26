@@ -8,7 +8,7 @@
 <h2>数据源初始化成功！</h2>
 <%
     InitialContext context = new InitialContext();
-    DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/osworkflow");
+    DataSource dataSource = (DataSource) context.lookup("java:comp/env/jdbc/myName");
 %>
 </body>
 </html>

@@ -18,4 +18,10 @@
     <servlet-name>addemo</servlet-name>
     <url-pattern>/ls</url-pattern>
 </servlet-mapping>
+ <!-- <resource-ref>
+<res-ref-name>jdbc/myName</res-ref-name>
+<res-type>javax.sql.DataSource</res-type>
+<res-auth>Container</res-auth>
+<res-sharing-scope>Shareable</res-sharing-scope>
+</resource-ref> -->
 </web-app>
