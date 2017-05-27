@@ -1,0 +1,16 @@
+用idea开发平台，在pom里面直接写
+[html] view plain copy print?
+<dependency>  
+           <groupId>com.oracle</groupId>  
+           <artifactId>ojdbc14</artifactId>  
+           <version>10.2.0.1.0</version>  
+       </dependency>  
+发现自动下载下载不了ojdbc14的jar包，网上查了一下说是oracle授权的原因。
+
+解决方法：
+下载一个ojdbc14的jar包。下载地址
+然后在这个jar包所在的目录打开cmd窗口输入
+[html] view plain copy print?
+mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.1.0 -Dpackaging=jar -Dfile=ojdbc14.jar  
+
+这样就会自动加载到你的本地maven库了
