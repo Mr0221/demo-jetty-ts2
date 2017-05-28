@@ -6,19 +6,27 @@
     http://www.springframework.org/schema/security
     http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
+	 <http pattern="/loggedout.jsp" security="none"/>
+	 <http pattern="/login.jsp" security="none"/>
     <http auto-config='true'  access-denied-page="/error/denyaccess.jsp">
-        <intercept-url pattern="/login.jsp" access="ROLE_ANONYMOUS" />
+        <intercept-url pattern="/login.jsp" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/**" access="ROLE_USER" />
         <form-login login-page="/login.jsp" default-target-url="/main.jsp"
             authentication-failure-url="/login.jsp?error=1"/>
     </http>
-    <authentication-manager>
+   <!--  <authentication-manager>
         <authentication-provider>
             <user-service>
                 <user name="admin" password="123" authorities="ROLE_USER,ROLE_ADMIN" />
                 <user name="tom" password="abc" authorities="ROLE_USER" />
             </user-service>
-
         </authentication-provider>
-    </authentication-manager>
+    </authentication-manager> -->
+    <authentication-manager>
+		<authentication-provider>
+			<jdbc-user-service data-source-ref="dataSource" 
+			        users-by-username-query="select uname username,pwd password,enabled  from tuser where uname=?" 
+			        authorities-by-username-query="select uname username,role role from tuserrole where uname=? "/>
+		</authentication-provider>
+	 </authentication-manager>
 </beans:beans>

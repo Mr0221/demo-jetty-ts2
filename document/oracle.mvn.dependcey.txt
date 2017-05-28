@@ -6,7 +6,7 @@
            <version>10.2.0.1.0</version>  
        </dependency>  
 发现自动下载下载不了ojdbc14的jar包，网上查了一下说是oracle授权的原因。
-
+http://blog.csdn.net/tjpu_lin/article/details/39552219
 解决方法：
 下载一个ojdbc14的jar包。下载地址
 然后在这个jar包所在的目录打开cmd窗口输入
