@@ -1,0 +1,81 @@
+
+---部门的根节点
+	insert into TDepartment values('dept0','所有部门',null,null);	
+
+
+----学校管理系统的所有业务模块
+	insert into tmodule values('m0','所有模块',null);
+	insert into tmodule values('m01','题库管理','m0');
+	insert into tmodule values('m02','课程管理','m0');
+	insert into tmodule values('m03','学生考勤管理','m0');
+	insert into tmodule values('m04','组织考试','m0');
+	insert into tmodule values('m05','考试管理','m0');
+	insert into tmodule values('m06','阅卷管理','m0');
+	insert into tmodule values('m07','成绩统计','m0');
+	insert into tmodule values('m08','学生管理','m0');
+	insert into tmodule values('m09','公告管理','m0');
+	insert into tmodule values('m10','招生管理','m0');
+	insert into tmodule values('m11','就业管理','m0');
+	insert into tmodule values('m12','教师管理','m0');
+	insert into tmodule values('m13','后勤管理','m0');
+
+----权限
+	insert into tauth values('m01-01','试题查看','m01');
+        insert into tauth values('m01-02','出题','m01');
+	insert into tauth values('m01-03','试题修改','m01');
+	
+        insert into tauth values('m02-01','班级排课','m02');
+        insert into tauth values('m02-02','课程调整','m02');
+        insert into tauth values('m02-03','讲师调整','m02');
+ 
+        insert into tauth values('m03-01','考勤查看','m03');
+        insert into tauth values('m03-02','考勤录入','m03');
+	insert into tauth values('m03-03','考勤维护','m03');
+
+        insert into tauth values('m04-01','考试安排列表','m04');
+        insert into tauth values('m04-02','组织考试','m04');
+    	insert into tauth values('m04-03','考试信息调整','m04');
+
+	insert into tauth values('m05-01','结束考试','m05');        
+
+	insert into tauth values('m06-01','阅卷','m06');
+	insert into tauth values('m06-02','查看试卷','m06');
+        insert into tauth values('m06-03','试卷调整','m06');        
+
+	insert into tauth values('m07-01','成绩统计','m07');
+        insert into tauth values('m07-02','成绩查看','m07');
+
+	insert into tauth values('m08-01','学生基本信息录入','m08');
+        insert into tauth values('m08-02','学生奖惩','m08');
+	insert into tauth values('m08-03','学生考勤','m08');
+
+	insert into tauth values('m09-01','公告管理','m09');
+	insert into tauth values('m10-01','招生管理','m10');
+	insert into tauth values('m11-01','就业管理','m11');
+	insert into tauth values('m12-01','教师管理','m12');
+	insert into tauth values('m13-01','后勤管理','m13');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
