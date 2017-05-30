@@ -77,4 +77,54 @@
             </plugin>
         </plugins>
     </build>
+    <!-- define the repositories here -->
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>aliyun maven</name>
+      <url>http://maven.aliyun.com/nexus/content/repositories/central/</url>
+    </repository>
+    
+    <repository>
+      <id>maven2-repo1</id>
+      <name>Maven2 Repo 1</name>
+      <url>http://repo1.maven.org/maven2</url>
+    </repository>
+
+    <repository>
+     <id>maven2-repo2</id>
+      <name>Maven2 Repo 2</name>
+      <url>http://repo2.maven.org/maven2/</url>
+    </repository>
+
+    <repository>
+      <id>ibiblio</id>
+      <name>iBiblio Maven2 Repository</name>
+      <url>http://www.ibiblio.org/maven2</url>
+    </repository>
+    <repository>
+      <id>apache-repo</id>
+      <name>Apache Repository</name>
+      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+    </repository>
+    <repository>
+      <id>compass-project.org</id>
+      <name>Compass</name>
+      <url>http://repo.compass-project.org</url>
+    </repository>
+
+    <repository>
+      <id>sonatype</id>
+      <name>sonatype</name>
+      <url>http://repository.sonatype.org/content/groups/public/</url>
+    </repository>
+
+    <repository>
+      <id>alfresco</id>
+      <name>alfresco</name>
+      <url>http://maven.alfresco.com/nexus/content/groups/public</url>
+    </repository>
+
+
+  </repositories>
 </project>
