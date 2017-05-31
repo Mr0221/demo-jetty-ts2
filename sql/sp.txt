@@ -1,0 +1,114 @@
+CREATE OR REPLACE PROCEDURE SP_12S(
+    I_PARENT_DATA_IDS   IN       VARCHAR2,
+    I_TASK_NAMES        IN       VARCHAR2,
+    I_ACT_START_DATE    IN       VARCHAR2,
+    I_ACT_END_DATE      IN       VARCHAR2,
+    I_ACT_PLANNED_DATE        IN       VARCHAR2,
+    I_ACT_PLANNED_END_DATE     IN       VARCHAR2,
+    I_TASK_STATUS       IN       VARCHAR2,
+    I_SPECIAL_COMMENTS  IN       VARCHAR2,
+    I_PARTIES           IN       VARCHAR2,
+    I_USER_CODE         IN       VARCHAR2
+) IS
+    arr_parent_data_id          varchar2_table_type;
+    arr_task_names              varchar2_table_type;
+    arr_parties                 varchar2_table_type;
+    arr_party                   varchar2_table_type;
+    v_count                     NUMBER(9,0);
+    v_task_id                   CHAR(32);
+BEGIN
+    arr_parent_data_id := fn_split (I_PARENT_DATA_IDS, ',');
+    arr_task_names := fn_split (I_TASK_NAMES, ',');
+    arr_parties := fn_split (I_PARTIES, ';');
+
+    FOR i IN arr_parent_data_id.FIRST .. arr_parent_data_id.LAST
+    LOOP
+        --v_parent_data_ids := ',' || v_parent_data_ids || '''' || arr_parent_data_id[i] || ''''
+        FOR k IN arr_task_names.FIRST .. arr_task_names.LAST
+        LOOP
+            BEGIN
+                select id into v_task_id from mer_cpm_task where parent_data_id = arr_parent_data_id(i) and task_name = arr_task_names(k);
+            EXCEPTION
+                WHEN NO_DATA_FOUND
+                THEN
+                    v_task_id := NULL;
+            END;
+
+            SP_UPDATE_CPM_STATUS_ALERT(v_task_id, I_TASK_STATUS, I_USER_CODE);
+
+            IF I_ACT_START_DATE is not null
+            THEN
+                update mer_cpm_task set ACT_START_DATE = to_date(I_ACT_START_DATE, 'dd/MM/yyyy') where id = v_task_id;
+            ELSE
+                IF I_TASK_STATUS is not null
+                THEN
+                update mer_cpm_task set ACT_START_DATE = to_date(sysdate) where id = v_task_id and ACT_START_DATE is null;
+                END IF;
+            END IF;
+
+            IF I_ACT_END_DATE is not null
+            THEN
+                update mer_cpm_task set ACT_END_DATE = to_date(I_ACT_END_DATE, 'dd/MM/yyyy') where id = v_task_id;
+            ELSE
+                IF I_TASK_STATUS is not null
+                THEN
+                update mer_cpm_task set ACT_END_DATE = to_date(sysdate) where id = v_task_id and ACT_END_DATE is null;
+                END IF;
+            END IF;
+
+            --modify logic to save
+            IF I_ACT_PLANNED_DATE is  null and I_ACT_PLANNED_END_DATE is null
+            THEN
+            update mer_cpm_task set EST_START_DATE = to_date(sysdate) where id = v_task_id and EST_START_DATE is null;
+            update mer_cpm_task set EST_END_DATE = to_date(sysdate) where id = v_task_id and EST_END_DATE is null;
+            END IF;
+
+            IF I_ACT_PLANNED_DATE is  not null and I_ACT_PLANNED_END_DATE is not null
+            THEN
+            update mer_cpm_task set EST_START_DATE = to_date(I_ACT_PLANNED_DATE, 'dd/MM/yyyy') where id = v_task_id;
+            update mer_cpm_task set EST_END_DATE = to_date(I_ACT_PLANNED_END_DATE, 'dd/MM/yyyy') where id = v_task_id;
+            END IF;
+
+            IF I_ACT_PLANNED_DATE is  not null and  I_ACT_PLANNED_END_DATE is null
+            THEN
+            update mer_cpm_task set EST_START_DATE = to_date(I_ACT_PLANNED_DATE, 'dd/MM/yyyy') where id = v_task_id;
+            update mer_cpm_task set EST_END_DATE = to_date(I_ACT_PLANNED_DATE, 'dd/MM/yyyy') where id = v_task_id;
+            END IF;
+
+            IF I_ACT_PLANNED_DATE is  null and  I_ACT_PLANNED_END_DATE is not  null
+            THEN
+            update mer_cpm_task set EST_START_DATE = to_date(I_ACT_PLANNED_END_DATE, 'dd/MM/yyyy') where id = v_task_id;
+            update mer_cpm_task set EST_END_DATE = to_date(I_ACT_PLANNED_END_DATE, 'dd/MM/yyyy') where id = v_task_id;
+            END IF;
+
+            IF I_SPECIAL_COMMENTS is not null
+            THEN
+                update mer_cpm_task set SPECIAL_COMMENTS = I_SPECIAL_COMMENTS where id = v_task_id;
+            END IF;
+
+            IF I_TASK_STATUS is not null
+            THEN
+                update mer_cpm_task set TASK_STATUS = I_TASK_STATUS where id = v_task_id;
+            END IF;
+
+            --// update cpm assignee, if I_PARTIES is null the set to default user.
+            IF I_PARTIES is not null
+            THEN
+                delete from mer_cpm_task_party where parent_id = v_task_id;
+                FOR j IN arr_parties.FIRST .. arr_parties.LAST
+                LOOP
+                    arr_party := fn_split (arr_parties(j), ',');
+                    insert into mer_cpm_task_party (id, version, parent_id, party_type, party_code, role_type)
+                    values (lower(sys_guid()), '1', v_task_id, arr_party(2), arr_party(1), 'assignee');
+                END LOOP;
+            ELSE
+                insert into mer_cpm_task_party (id, version, parent_id, party_type, party_code, role_type)
+                values (lower(sys_guid()), '1', v_task_id, 'user', I_USER_CODE, 'assignee');
+            END IF;
+        END LOOP;
+    END LOOP;
+
+    NULL;
+END;
+/
+
