@@ -1,0 +1,11 @@
+http://blog.csdn.net/studyhxz/article/details/52945185
+
+volatile关键字只能用于修饰变量，解决的是变量在多线程之间的可见性（内存模型中私有堆栈与公有堆栈，关键字volatile提醒线程每次从共享内存中读取变量，而不是从私有内存中读取），但不能保证原子性。多线程访问volatile变量不会发生阻塞。线程安全包括原子性与可见性两方面。
+可见volatile关键字不保证同步性。解决办法是在addCount()方法前添加synchronized关键字。
+原子类也并不完全安全。虽然incrementAndGet()方法是原子性的，但方法与方法之间的调用不是原子时，仍会出现非线程安全。例如，在一个非原子的方法中调用多个原子方法，而多线程访问这个非原子方法，则可能出现问题。
+
+5、补充
+1）volatile关键字是线程同步的轻量级实现，性能上比synchronized要好。
+2）volatile能保证数据的可见性，但不能保证原子性；synchronized可以保证原子性，也可以间接保证可见性，因为它会将私有内存和公共内存中的数据做同步。
+
+每个线程第一次调用ThreadLocal类的get()都会调用initialValue()方法，这里重写了initialValue()方法，两个线程具有不同的初始值。
