@@ -7,14 +7,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author alienware
  *
  */
-public class MyQueue {
+public class MyQueueWNAtomicList {
 	private LinkedList<Object> list= new LinkedList<Object>();
 	private AtomicInteger count = new AtomicInteger(0);
 	private final int maxSize;
 	private final int minSize = 0;
 	private final Object lock = new Object();
 	
-	public MyQueue (int maxSize){
+	public MyQueueWNAtomicList (int maxSize){
 		this.maxSize = maxSize;
 	}
 	
@@ -57,7 +57,7 @@ public class MyQueue {
 	public static void main(String[] args) throws Exception {
 
 		
-		final MyQueue m = new MyQueue(5);
+		final MyQueueWNAtomicList m = new MyQueueWNAtomicList(5);
 		m.put("a");
 		m.put("b");
 		m.put("c");
