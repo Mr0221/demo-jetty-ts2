@@ -26,7 +26,7 @@ public class QueueUs {
 		System.out.println(q.size());	//4
 		*/
 		
-		/**
+		/** 有界 阻塞
 		ArrayBlockingQueue<String> array = new ArrayBlockingQueue<String>(5);
 		array.put("a");
 		array.put("b");
@@ -38,7 +38,7 @@ public class QueueUs {
 		*/
 		
 		
-		/**
+		/** 无界
 		//阻塞队列
 		LinkedBlockingQueue<String> q = new LinkedBlockingQueue<String>();
 		q.offer("a");
@@ -63,6 +63,7 @@ public class QueueUs {
 		*/
 		
 		
+		//一种没有缓冲的队列， 生产的数据直接被获得并消费
 		final SynchronousQueue<String> q = new SynchronousQueue<String>();
 		Thread t1 = new Thread(new Runnable() {
 			@Override
