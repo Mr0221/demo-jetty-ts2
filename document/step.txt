@@ -1,0 +1,79 @@
+http://learning.happymmall.com/
+wget -O jdk.rpm http://download.oracle.com/otn/java/jdk/7u80-b15/jdk-7u80-linux-x64.rpm?AuthParam=1496660727_475ce63d6d4a346891f96051be50c758
+
+
+sudo rpm -ivh jdk.rpm
+sudo vim /etc/profile
+
+export JAVA_HOME=/usr/java/jdk1.7.0_80
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export PATH=$JAVA_HOME/bin:$PATH
+
+source /etc/profile
+
+
+wget -O tomcat.tar.gz http://learning.happymmall.com/tomcat/apache-tomcat-7.0.73.tar.gz
+tar -zxvf tomcat.tar.gz
+
+sudo vim conf/server.xml
+/8080
+URIEncoding="UTF-8"
+cd bin
+./startup.sh
+
+pwd
+
+sudo yum -y install vsftpd
+sudo yum remove vsftpd
+
+sudo mkdir ftpfile
+sudo useradd ftpuser -d /ftpfile/ -s /sbin/nologin
+sudo chown -R ftpuser /ftpfile/
+sudo vim index.html
+here is ftpfile
+whereis vsftpd
+sudo vim /etc/vsftpd/vsftpd.conf 
+
+/banner
+ftpd_banner=Welcome to blah Eddy.li FTP service.
+
+ftpd_banner=Welcome to blah Eddy.li FTP service.
+
+local_root=/ftpfile
+#anno_root=/ftpfile
+use_localtime=YES
+
+anonymous_enable=NO
+pasv_min_port=61001
+pasv_max_port=62000
+
+/chroot_list
+chroot_list_enable=YES
+# (default follows)
+chroot_list_file=/etc/vsftpd/chroot_list
+
+sudo  vim /etc/vsftpd/chroot_list
+ftpuser
+
+
+
+iptables -P OUTPUT ACCEPT
+service iptables save
+
+*filter
+:INPUT ACCEPT [6:396]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [6:592]
+
+-A INPUT -p TCP --dport 61001:62000 -j ACCEPT
+-A OUTPUT -p TCP --sport 61001:62000 -j ACCEPT
+-A INPUT -p TCP --dport 20 -j ACCEPT
+-A OUTPUT -p TCP --sport 20 -j ACCEPT
+-A INPUT -p TCP --dport 21 -j ACCEPT
+-A OUTPUT -p TCP --sport 21 -j ACCEPT
+
+COMMIT
+
+
+sudo service iptables restart
+sudo service vsftpd restart
