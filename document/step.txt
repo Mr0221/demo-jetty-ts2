@@ -1,23 +1,4 @@
 http://learning.happymmall.com/
-
-备份
-
-mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-
-CentOS 6
-
-wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
-
-yum makecache生成缓存
-
-rpm -qa | grep jdk
-
-java -version
-
-wget http://download.oracle.com/otn/java/jdk/7u80-b15/jdk-7u80-linux-x64.rpm?AuthParam=1496650060_785e3ac8e548755b126d424b61a35021
-
-
-
 wget -O jdk.rpm http://download.oracle.com/otn/java/jdk/7u80-b15/jdk-7u80-linux-x64.rpm?AuthParam=1496660727_475ce63d6d4a346891f96051be50c758
 
 
@@ -53,7 +34,7 @@ sudo chown -R ftpuser /ftpfile/
 sudo vim index.html
 here is ftpfile
 whereis vsftpd
-sudo vim /etc/vsftpd/vsftpd.conf
+sudo vim /etc/vsftpd/vsftpd.conf 
 
 /banner
 ftpd_banner=Welcome to blah Eddy.li FTP service.
@@ -98,3 +79,21 @@ COMMIT
 
 sudo service iptables restart
 sudo service vsftpd restart
+
+sudo vim /etc/selinux/config
+
+SELINUX=disabled
+
+sudo yum install gcc-c++
+sudo yum install openssl openssl-devel
+sudo yum install zlib zlib-devel
+sudo yum install pcre pcre-devel
+wget http://nginx.org/download/nginx-1.13.1.tar.gz
+ tar -zxvf nginx-1.13.1.tar.gz
+./configure
+make
+make install
+./nginx
+
+ps -aux | grep nginx
+
