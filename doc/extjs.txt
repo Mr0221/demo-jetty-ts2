@@ -1,0 +1,9 @@
+Ext.MessageBox.show({
+        title: title,
+        width: Core.MessageBox.STANDARD_WIDTH,
+        msg: msg,
+        buttons: Ext.MessageBox.OK,
+        animEl: 'body',
+        fn: fn,
+        icon: icon
+   });
